@@ -1,0 +1,38 @@
+name: LeadWires
+version: '1.0'
+author: saharNooby
+main: me.saharnooby.plugins.leadwires.LeadWires
+api-version: '1.13'
+depend: ['ProtocolLib']
+commands:
+  add-wire:
+    description: 'Adds a new wire'
+    usage: '§e[LeadWires] /add-wire <world> <x> <y> <z> <x2> <y2> <z2> [uuid]'
+  remove-wire:
+    description: 'Removes a wire by an UUID'
+    usage: '§e[LeadWires] /remove-wire <uuid>'
+  remove-wires-in-block:
+    description: 'Removes all wires starting in a block'
+    usage: '§e[LeadWires] /remove-wires-in-block <world> <x> <y> <z>'
+  remove-nearest-wire:
+    description: 'Removes a wire nearest to the sender'
+    usage: '§e[LeadWires] /remove-nearest-wire'
+  wire-tool:
+    description: 'Gives a tool for placing or removing wires'
+    usage: '§e[LeadWires] /wire-tool <place|place-thick|remove>'
+permissions:
+  leadwires.add-wire:
+    description: 'Allows you to use /add-wire'
+    default: op
+  leadwires.remove-wire:
+    description: 'Allows you to use /remove-wire'
+    default: op
+  leadwires.remove-wires-in-block:
+    description: 'Allows you to use /remove-wires-in-block'
+    default: op
+  leadwires.remove-nearest-wire:
+    description: 'Allows you to use /remove-nearest-wire'
+    default: op
+  leadwires.use-tools:
+    description: 'Allows you to use command /wire-tool and tools'
+    default: op

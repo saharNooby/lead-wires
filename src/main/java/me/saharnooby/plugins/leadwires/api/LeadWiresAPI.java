@@ -1,47 +1,13 @@
-# lead-wires
+package me.saharnooby.plugins.leadwires.api;
 
-A Spigot plugin that allows you to place "wires".
+import lombok.NonNull;
+import me.saharnooby.plugins.leadwires.wire.Wire;
+import org.bukkit.Location;
 
-![Preview](https://saharnooby.me/download/preview.png?uuid=51da1969-48a3-42ef-82c1-6488a15af590)
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
-[SpigotMC plugin page](https://www.spigotmc.org/resources/leadwires.76515/)
-
-## Build
-
-To build, you need:
-- Maven
-- JDK 8
-- `buildSettings.properties` file with `outputDir` property set to path where you want the JAR to appear
-
-`git clone` the repository, `cd` into its dir and run `npm clean install`.
-
-## Using as an API
-
-The plugin allows you to create and remove wires programmatically, so you or your developers can implement some awesome ideas like electricity, power poles etc.
-
-### Adding as a dependency
-
-First, you need to build this plugin using instructions above.
-
-Then, you need to add the plugin as a Maven dependency:
-
-```xml
-<dependency>
-    <groupId>me.saharnooby.plugins</groupId>
-    <artifactId>lead-wires</artifactId>
-    <version>1.0</version>
-</dependency>
-```
-
-Alternatively, you can just download plugin from SpigotMC and link it yourself.
-
-Add to your `plugin.yml`: `depend: ['LeadWires']` so Spigot will know to load your plugin after LeadWires.
-
-To get an API instance, call `me.saharnooby.plugins.leadwires.LeadWires.getApi()`.
-
-### API documentation
-
-```java
 /**
  * An API for the {@link me.saharnooby.plugins.leadwires.LeadWires} plugin.
  * <p>This API is not thread-safe and must be called only from the tick thread.
@@ -89,4 +55,3 @@ public interface LeadWiresAPI {
 	void removeWire(@NonNull UUID uuid);
 
 }
-```
