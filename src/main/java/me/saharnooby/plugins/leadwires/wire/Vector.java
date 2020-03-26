@@ -2,6 +2,7 @@ package me.saharnooby.plugins.leadwires.wire;
 
 import lombok.Data;
 import lombok.NonNull;
+import me.saharnooby.plugins.leadwires.chunk.ChunkCoord;
 import org.bukkit.Location;
 
 /**
@@ -37,6 +38,10 @@ public final class Vector {
 	 */
 	public Vector add(@NonNull Vector v) {
 		return new Vector(this.x + v.x, this.y + v.y, this.z + v.z);
+	}
+
+	public ChunkCoord getChunk() {
+		return new ChunkCoord((int) Math.floor(this.x) >> 4, (int) Math.floor(this.z) >> 4);
 	}
 
 }

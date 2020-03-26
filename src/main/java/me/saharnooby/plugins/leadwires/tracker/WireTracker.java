@@ -4,13 +4,16 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import me.saharnooby.plugins.leadwires.chunk.ChunkCoord;
 import me.saharnooby.plugins.leadwires.chunk.LoadedChunkTracker;
+import me.saharnooby.plugins.leadwires.util.EntityId;
 import me.saharnooby.plugins.leadwires.wire.Vector;
 import me.saharnooby.plugins.leadwires.wire.Wire;
 import me.saharnooby.plugins.leadwires.wire.WireStorage;
-import me.saharnooby.plugins.leadwires.util.EntityId;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author saharNooby
@@ -58,11 +61,11 @@ public final class WireTracker {
 	}
 
 	private static boolean isLoaded(@NonNull Set<ChunkCoord> loaded, @NonNull Wire wire) {
-		return loaded.contains(getChunk(wire.getA())) && loaded.contains(getChunk(wire.getB()));
+		return contains(loaded, wire.getA().add(ProtocolUtil.ATTACHED_OFFSET)) && contains(loaded, wire.getB().add(ProtocolUtil.HOLDER_OFFSET));
 	}
 
-	private static ChunkCoord getChunk(@NonNull Vector vector) {
-		return new ChunkCoord(((int) Math.floor(vector.getX())) >> 4, ((int) Math.floor(vector.getZ())) >> 4);
+	private static boolean contains(@NonNull Set<ChunkCoord> loaded, @NonNull Vector pos) {
+		return loaded.contains(pos.getChunk());
 	}
 
 	public void removePlayer(@NonNull Player player) {
