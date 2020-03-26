@@ -125,7 +125,7 @@ public final class LoadedChunkTracker extends PacketAdapter implements Listener 
 	private void addOnlinePlayers() {
 		this.lock.writeLock().lock();
 		try {
-			int dist = Bukkit.getViewDistance();
+			int dist = Math.max(1, Bukkit.getViewDistance());
 
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				Set<ChunkCoord> set = this.loaded.computeIfAbsent(player, k -> new HashSet<>());
