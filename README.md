@@ -13,7 +13,7 @@ To build, you need:
 - JDK 8
 - `buildSettings.properties` file with `outputDir` property set to path where you want the JAR to appear
 
-`git clone` the repository, `cd` into its dir and run `npm clean install`.
+`git clone` the repository, `cd` into its dir and run `mvn clean install`.
 
 ## Using as an API
 
