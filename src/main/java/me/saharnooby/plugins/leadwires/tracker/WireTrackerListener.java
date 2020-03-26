@@ -6,7 +6,6 @@ import me.saharnooby.plugins.leadwires.LeadWires;
 import me.saharnooby.plugins.leadwires.chunk.event.ChunkSentEvent;
 import me.saharnooby.plugins.leadwires.chunk.event.ChunkUnloadSentEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,17 +23,17 @@ public final class WireTrackerListener implements Listener {
 
 	@EventHandler
 	public void onPlayerChangedWorld(PlayerChangedWorldEvent e) {
-		this.tracker.checkPlayer(e.getPlayer());
+		this.tracker.onWorldChanged(e.getPlayer());
 	}
 
 	@EventHandler
 	public void onChunkSent(ChunkSentEvent e) {
-		checkInMainThread(e, e.getPlayer());
+		doInMainThread(e, () -> this.tracker.onChunkSent(e.getPlayer(), e.getCoord()));
 	}
 
 	@EventHandler
 	public void onChunkUnloadSent(ChunkUnloadSentEvent e) {
-		checkInMainThread(e, e.getPlayer());
+		doInMainThread(e, () -> this.tracker.onChunkUnloadSent(e.getPlayer(), e.getCoord()));
 	}
 
 	@EventHandler
@@ -42,11 +41,11 @@ public final class WireTrackerListener implements Listener {
 		this.tracker.removePlayer(e.getPlayer());
 	}
 
-	private void checkInMainThread(@NonNull Event event, @NonNull Player player) {
+	private static void doInMainThread(@NonNull Event event, @NonNull Runnable task) {
 		if (event.isAsynchronous()) {
-			Bukkit.getScheduler().runTask(LeadWires.getInstance(), () -> this.tracker.checkPlayer(player));
+			Bukkit.getScheduler().runTask(LeadWires.getInstance(), task);
 		} else {
-			this.tracker.checkPlayer(player);
+			task.run();
 		}
 	}
 

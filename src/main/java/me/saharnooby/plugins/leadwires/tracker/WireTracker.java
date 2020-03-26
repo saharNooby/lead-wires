@@ -26,6 +26,18 @@ public final class WireTracker {
 	private final LoadedChunkTracker chunkTracker;
 	private final Map<Player, PlayerTrackerData> map = new HashMap<>();
 
+	public void onWorldChanged(@NonNull Player player) {
+		checkPlayer(player);
+	}
+
+	public void onChunkSent(@NonNull Player player, @NonNull ChunkCoord coord) {
+		checkPlayer(player);
+	}
+
+	public void onChunkUnloadSent(@NonNull Player player, @NonNull ChunkCoord coord) {
+		checkPlayer(player);
+	}
+
 	public void checkPlayer(@NonNull Player player) {
 		PlayerTrackerData data = this.map.computeIfAbsent(player, k -> new PlayerTrackerData());
 
