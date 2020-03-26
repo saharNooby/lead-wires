@@ -57,7 +57,11 @@ public final class LeadWires extends JavaPlugin {
 
 		this.tracker = new WireTracker(this.storage, chunkTracker);
 		Bukkit.getPluginManager().registerEvents(new WireTrackerListener(this.tracker), this);
-		Bukkit.getOnlinePlayers().forEach(this.tracker::checkPlayer);
+
+		// Check all players that are currently online in case of /reload command.
+		this.tracker.checkAllPlayers();
+		// Check all players every 5 sec just in case.
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> this.tracker.checkAllPlayers(), 5 * 20, 5 * 20);
 
 		this.api = new LeadWiresAPIImpl(this.storage, this.tracker);
 

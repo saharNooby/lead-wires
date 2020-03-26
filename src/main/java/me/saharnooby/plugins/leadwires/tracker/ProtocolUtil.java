@@ -23,17 +23,13 @@ import java.util.UUID;
  */
 public final class ProtocolUtil {
 
-	// Exact values obtained from net.minecraft.client.renderer.entity.MobRenderer#renderLeash
-	static final Vector ATTACHED_OFFSET = new Vector(0.0, -0.8083333333333332, -0.16000000238418544);
-	static final Vector HOLDER_OFFSET = new Vector(0.6999999999999886, 0.7050000000000001, -0.5);
-
 	public static void spawn(@NonNull Player player, @NonNull SentWire sent) {
-		//System.out.println("Spawn " + wire.getWire().getUuid() + " to " + player.getName());
+		//System.out.println("Spawn " + sent.getWire().getUuid() + " to " + player.getName() + " [" + new Exception().getStackTrace()[2] + "]");
 
 		Wire wire = sent.getWire();
 
-		spawnEntity(player, sent.getIdA(), wire.getA().add(ATTACHED_OFFSET));
-		spawnEntity(player, sent.getIdB(), wire.getB().add(HOLDER_OFFSET));
+		spawnEntity(player, sent.getIdA(), TrackerUtil.posA(wire));
+		spawnEntity(player, sent.getIdB(), TrackerUtil.posB(wire));
 
 		attachEntities(player, sent.getIdA(), sent.getIdB());
 	}
