@@ -1,6 +1,7 @@
 package me.saharnooby.plugins.leadwires.wire;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import org.bukkit.Location;
 
@@ -14,6 +15,7 @@ import static java.lang.Double.parseDouble;
  * @since 21:09 24.03.2020
  */
 @Data
+@EqualsAndHashCode(exclude = {"world", "a", "b"})
 public final class Wire {
 
 	/**
