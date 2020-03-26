@@ -7,6 +7,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import lombok.NonNull;
 import me.saharnooby.plugins.leadwires.chunk.event.ChunkSentEvent;
 import me.saharnooby.plugins.leadwires.chunk.event.ChunkUnloadSentEvent;
+import me.saharnooby.plugins.leadwires.chunk.event.RespawnSentEvent;
 import me.saharnooby.plugins.leadwires.util.NMSUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -100,6 +101,10 @@ public final class LoadedChunkTracker extends PacketAdapter implements Listener 
 
 		if (unloaded != null) {
 			Bukkit.getPluginManager().callEvent(new ChunkUnloadSentEvent(isAsync, player, unloaded));
+		}
+
+		if (type == PacketType.Play.Server.RESPAWN) {
+			Bukkit.getPluginManager().callEvent(new RespawnSentEvent(isAsync, player));
 		}
 	}
 
