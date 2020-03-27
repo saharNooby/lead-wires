@@ -17,7 +17,7 @@ To build, you need:
 
 ## Using as an API
 
-The plugin allows you to create and remove wires programmatically, so you or your developers can implement some awesome ideas like electricity, power poles etc.
+The plugin allows you to create and remove wires programmatically, so you or your developers can implement some awesome ideas like electricity, power poles, etc.
 
 ### Adding as a dependency
 
