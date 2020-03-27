@@ -1,5 +1,6 @@
 name: LeadWires
 version: '1.0'
+website: 'https://www.spigotmc.org/resources/leadwires.76515/'
 author: saharNooby
 main: me.saharnooby.plugins.leadwires.LeadWires
 api-version: '1.13'
