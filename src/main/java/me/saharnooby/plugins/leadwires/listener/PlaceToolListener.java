@@ -3,7 +3,6 @@ package me.saharnooby.plugins.leadwires.listener;
 import lombok.NonNull;
 import me.saharnooby.plugins.leadwires.LeadWires;
 import me.saharnooby.plugins.leadwires.Tools;
-import me.saharnooby.plugins.leadwires.api.LeadWiresAPI;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -13,7 +12,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.util.Vector;
 
 /**
  * @author saharNooby
@@ -97,39 +95,11 @@ public final class PlaceToolListener implements Listener {
 			b = temp;
 		}
 
-		LeadWiresAPI api = LeadWires.getApi();
-
-		if (!isThick) {
-			api.addWire(a, b);
-			return;
+		if (isThick) {
+			LeadWires.getApi().addThickWire(a, b);
+		} else {
+			LeadWires.getApi().addWire(a, b);
 		}
-
-		// The lead consists of two long bent rectangles, each angled at 45 degrees. It gives leads "X" shape.
-		// Width of the rectangle is 0.025 (as set in Minecraft client code). So, width of the wire itself is 0.025 / sqrt(2), or 0.0176.
-		// To place a thick wire, we can place three wires in the shape of a triangle:
-		// ><><
-		//  ><
-		// Center of the triangle will be the initial location specified by the player.
-		// The resulting wire will appear as 2x thicker that regular.
-
-		double size = 0.025 / Math.sqrt(2);
-		double half = size / 2;
-
-		Vector dir = b.toVector().subtract(a.toVector()).setY(0).normalize();
-		// A vector that is perpendicular to the horizontal direction of the wire.
-		double px = -dir.getZ();
-		double pz = dir.getX();
-
-		// Bottom wire
-		api.addWire(add(a, 0, -half, 0), add(b, 0, -half, 0));
-		// Top wires
-		api.addWire(add(a, -half * px, half, -half * pz), add(b, -half * px, half, -half * pz));
-		api.addWire(add(a, half * px, half, half * pz), add(b, half * px, half, half * pz));
-	}
-	
-	// Calls add() on a copy of the location.
-	private static Location add(@NonNull Location loc, double x, double y, double z) {
-		return loc.clone().add(x, y, z);
 	}
 
 	@EventHandler

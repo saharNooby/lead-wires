@@ -4,6 +4,7 @@ import lombok.NonNull;
 import me.saharnooby.plugins.leadwires.wire.Wire;
 import org.bukkit.Location;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,6 +47,27 @@ public interface LeadWiresAPI {
 	 * @return Generated UUID of the new wire.
 	 */
 	UUID addWire(@NonNull Location a, @NonNull Location b);
+
+	/**
+	 * Creates a new thick wire from two points in the same world.
+	 * Thick wires consist of 3 regular wires and appear as two times bigger.
+	 * If any wire with such UUID already exists, an {@link IllegalArgumentException} will be thrown.
+	 * If worlds of the locations are different, an {@link IllegalArgumentException} will be thrown.
+	 * @param uuids List of UUIDs of the new wires, must contain exactly three non-null elements.
+	 * @param a First point.
+	 * @param b Second point.
+	 */
+	void addThickWire(@NonNull List<UUID> uuids, @NonNull Location a, @NonNull Location b);
+
+	/**
+	 * Creates a new wire from an UUID and two points in the same world.
+	 * Thick wires consist of 3 regular wires and appear as two times bigger.
+	 * If worlds of the locations are different, an {@link IllegalArgumentException} will be thrown.
+	 * @param a First point.
+	 * @param b Second point.
+	 * @return List of three generated UUIDs of each new wire.
+	 */
+	List<UUID> addThickWire(@NonNull Location a, @NonNull Location b);
 
 	/**
 	 * Removes a wire by its UUID.
