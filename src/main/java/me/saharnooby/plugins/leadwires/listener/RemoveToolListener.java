@@ -64,9 +64,7 @@ public final class RemoveToolListener implements Listener {
 	}
 
 	private static boolean isInBlock(@NonNull Location loc, @NonNull Vector vec) {
-		return loc.getBlockX() == Math.floor(vec.getX()) &&
-				loc.getBlockY() == Math.floor(vec.getY()) &&
-				loc.getBlockZ() == Math.floor(vec.getZ());
+		return loc.getBlockX() == vec.getBlockX() && loc.getBlockY() == vec.getBlockY() && loc.getBlockZ() == vec.getBlockZ();
 	}
 
 }

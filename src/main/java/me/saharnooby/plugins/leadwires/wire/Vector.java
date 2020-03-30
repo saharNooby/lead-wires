@@ -41,7 +41,27 @@ public final class Vector {
 	}
 
 	public ChunkCoord getChunk() {
-		return new ChunkCoord((int) Math.floor(this.x) >> 4, (int) Math.floor(this.z) >> 4);
+		return new ChunkCoord(getChunkX(), getChunkZ());
+	}
+
+	public int getBlockX() {
+		return (int) Math.floor(this.x);
+	}
+
+	public int getBlockY() {
+		return (int) Math.floor(this.y);
+	}
+
+	public int getBlockZ() {
+		return (int) Math.floor(this.z);
+	}
+
+	public int getChunkX() {
+		return getBlockX() >> 4;
+	}
+
+	public int getChunkZ() {
+		return getBlockZ() >> 4;
 	}
 
 }
