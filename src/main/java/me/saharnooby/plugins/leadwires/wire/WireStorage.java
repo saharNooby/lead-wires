@@ -7,6 +7,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 /**
@@ -94,6 +95,12 @@ public final class WireStorage {
 
 	public void close() {
 		this.executor.shutdown();
+
+		try {
+			this.executor.awaitTermination(1, TimeUnit.MINUTES);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private File getFile() {
