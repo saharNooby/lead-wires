@@ -11,17 +11,21 @@ import me.saharnooby.plugins.leadwires.listener.PlaceToolListener;
 import me.saharnooby.plugins.leadwires.listener.RemoveToolListener;
 import me.saharnooby.plugins.leadwires.message.MessageConfig;
 import me.saharnooby.plugins.leadwires.metrics.Metrics;
+import me.saharnooby.plugins.leadwires.module.Module;
+import me.saharnooby.plugins.leadwires.module.ModuleFactory;
 import me.saharnooby.plugins.leadwires.tracker.WireTracker;
 import me.saharnooby.plugins.leadwires.tracker.WireTrackerListener;
 import me.saharnooby.plugins.leadwires.wire.WireStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -40,6 +44,8 @@ public final class LeadWires extends JavaPlugin {
 	private LeadWiresAPI api;
 
 	private MessageConfig messages;
+
+	private final List<Module> modules = new ArrayList<>();
 
 	@Override
 	public void onEnable() {
@@ -70,19 +76,18 @@ public final class LeadWires extends JavaPlugin {
 
 		registerCommands();
 
-		try {
-			loadMessages();
-		} catch (Exception e) {
-			getLogger().log(Level.SEVERE, "Failed to load plugin messages", e);
+		loadMessages();
 
-			this.messages = new MessageConfig();
-		}
+		saveDefaultConfig();
+		createModules();
+		this.modules.forEach(Module::enable);
 
 		new Metrics(this, 6873);
 	}
 
 	@Override
 	public void onDisable() {
+		this.modules.forEach(Module::disable);
 		this.storage.close();
 		this.tracker.removeAllPlayers();
 	}
@@ -93,22 +98,63 @@ public final class LeadWires extends JavaPlugin {
 		getCommand("remove-wires-in-block").setExecutor(new RemoveWiresInBlockCommand());
 		getCommand("remove-nearest-wire").setExecutor(new RemoveNearestWireCommand());
 		getCommand("wire-tool").setExecutor(new WireToolCommand());
+		getCommand("lead-wires-reload").setExecutor(new ReloadCommand());
 	}
 
-	private void loadMessages() throws IOException, InvalidConfigurationException {
-		File dir = getDataFolder();
+	private void createModules() {
+		ConfigurationSection modules = getConfig().getConfigurationSection("modules");
 
-		if (!dir.exists() && !dir.mkdirs()) {
-			throw new IOException("Failed to mkdir " + dir);
+		if (modules == null) {
+			return;
 		}
 
-		File file = new File(dir, "messages.yml");
+		for (String key : modules.getKeys(false)) {
+			ConfigurationSection moduleSection = modules.getConfigurationSection(key);
 
-		if (!file.exists()) {
-			Files.copy(LeadWires.class.getResourceAsStream("/messages.yml"), file.toPath());
+			if (moduleSection == null) {
+				continue;
+			}
+
+			try {
+				ModuleFactory.create(key, moduleSection).ifPresent(this.modules::add);
+			} catch (IllegalArgumentException e) {
+				getLogger().log(Level.SEVERE, "Invalid config for module " + key, e);
+			}
 		}
+	}
 
-		this.messages = new MessageConfig(file);
+	private void loadMessages() {
+		try {
+			File dir = getDataFolder();
+
+			if (!dir.exists() && !dir.mkdirs()) {
+				throw new IOException("Failed to mkdir " + dir);
+			}
+
+			File file = new File(dir, "messages.yml");
+
+			if (!file.exists()) {
+				Files.copy(LeadWires.class.getResourceAsStream("/messages.yml"), file.toPath());
+			}
+
+			this.messages = new MessageConfig(file);
+		} catch (Exception e) {
+			getLogger().log(Level.SEVERE, "Failed to load plugin messages", e);
+
+			this.messages = new MessageConfig();
+		}
+	}
+
+	public void reload() {
+		loadMessages();
+
+		this.modules.forEach(Module::disable);
+		this.modules.clear();
+
+		saveDefaultConfig();
+		reloadConfig();
+		createModules();
+		this.modules.forEach(Module::enable);
 	}
 
 	public static void sendMessage(@NonNull CommandSender sender, @NonNull String key, Object... args) {

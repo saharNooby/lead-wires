@@ -21,6 +21,9 @@ commands:
   wire-tool:
     description: 'Gives a tool for placing or removing wires'
     usage: '§e[LeadWires] /wire-tool <place|place-thick|remove>'
+  lead-wires-reload:
+    description: 'Reloads the plugin config'
+    usage: '§e[LeadWires] /lead-wires-reload'
 permissions:
   leadwires.add-wire:
     description: 'Allows you to use /add-wire'
@@ -36,4 +39,7 @@ permissions:
     default: op
   leadwires.use-tools:
     description: 'Allows you to use command /wire-tool and tools'
+    default: op
+  leadwires.reload:
+    description: 'Allows you to use /lead-wires-reload'
     default: op

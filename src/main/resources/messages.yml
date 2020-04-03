@@ -11,6 +11,7 @@ canNotDetermineLocation: "&cCan't determine your location"
 noWiresInWorld: "&cNo wires found in world %s"
 notAPlayer: "&cYou must be a player to use this command"
 toolGiven: "&aThe %s tool has been given"
+pluginReloaded: "&aThe plugin has been reloaded"
 
 # Tool messages.
 noPermissionsForTool: "&cYou don't have permission to use this"
