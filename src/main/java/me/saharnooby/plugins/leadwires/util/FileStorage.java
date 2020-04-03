@@ -4,6 +4,8 @@ import lombok.NonNull;
 import me.saharnooby.plugins.leadwires.LeadWires;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,6 +27,21 @@ public abstract class FileStorage<T> {
 		clear();
 
 		File file = getFile();
+		File oldFile = getOldFile();
+
+		if (oldFile.exists()) {
+			if (!file.exists()) {
+				LeadWires.getInstance().getLogger().info("Migrating old storage file " + oldFile);
+
+				makeDirFor(file);
+
+				Files.copy(oldFile.toPath(), file.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+			}
+
+			if (!oldFile.delete()) {
+				LeadWires.getInstance().getLogger().warning("Failed to delete old storage file " + oldFile);
+			}
+		}
 
 		if (!file.exists()) {
 			return;
@@ -72,6 +89,10 @@ public abstract class FileStorage<T> {
 	}
 
 	private File getFile() {
+		return new File(new File(LeadWires.getInstance().getDataFolder(), "data"), getFileName());
+	}
+
+	private File getOldFile() {
 		return new File(LeadWires.getInstance().getDataFolder(), getFileName());
 	}
 
