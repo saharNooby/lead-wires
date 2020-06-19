@@ -47,6 +47,9 @@ public final class LeadWires extends JavaPlugin {
 
 	private final List<Module> modules = new ArrayList<>();
 
+	@Getter
+	private boolean enableWireResend;
+
 	@Override
 	public void onEnable() {
 		instance = this;
@@ -81,6 +84,8 @@ public final class LeadWires extends JavaPlugin {
 		saveDefaultConfig();
 		createModules();
 		this.modules.forEach(Module::enable);
+
+		this.enableWireResend = getConfig().getBoolean("enableWireResend");
 
 		new Metrics(this, 6873);
 	}
@@ -155,6 +160,8 @@ public final class LeadWires extends JavaPlugin {
 		reloadConfig();
 		createModules();
 		this.modules.forEach(Module::enable);
+
+		this.enableWireResend = getConfig().getBoolean("enableWireResend");
 	}
 
 	public static void sendMessage(@NonNull CommandSender sender, @NonNull String key, Object... args) {

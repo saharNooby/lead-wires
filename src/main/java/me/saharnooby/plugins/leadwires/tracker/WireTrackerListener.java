@@ -12,6 +12,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.Set;
+import java.util.UUID;
+
 /**
  * @author saharNooby
  * @since 10:21 25.03.2020
@@ -23,7 +26,22 @@ public final class WireTrackerListener implements Listener {
 
 	@EventHandler
 	public void onChunkSent(ChunkSentEvent e) {
-		doInMainThread(e, () -> this.tracker.onChunkSent(e.getPlayer(), e.getCoord()));
+		doInMainThread(e, () -> {
+			Set<UUID> sent = this.tracker.onChunkSent(e.getPlayer(), e.getCoord());
+
+			if (sent.isEmpty()) {
+				return;
+			}
+
+			if (LeadWires.getInstance().isEnableWireResend()) {
+				// In case wires were not displayed because of any reason, we need to send them again later
+				// If a wire was spawned immediately, this code does almost nothing (wires may blink when respawned)
+				// This is not good, but I'm too lazy to find the original cause of wire disaappearing and this "fix" seems to work
+				for (int delay : new int[] {30, 50}) {
+					Bukkit.getScheduler().scheduleSyncDelayedTask(LeadWires.getInstance(), () -> this.tracker.respawnWires(e.getPlayer(), sent), delay);
+				}
+			}
+		});
 	}
 
 	@EventHandler

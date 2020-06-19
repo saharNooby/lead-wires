@@ -1,3 +1,10 @@
+# If you are having problems with wires randomly not appearing,
+# try to enable this feature. It will cause wires respawn with
+# delay, after they were sent to a player.
+# This can cause slight client lag on chunk loading in older versions,
+# if you have too many wires in one place, especially thick wires.
+enableWireResend: false
+
 # Modules of the plugin implement different features.
 modules:
   # Lead placement module allows players to place wires using lead item.

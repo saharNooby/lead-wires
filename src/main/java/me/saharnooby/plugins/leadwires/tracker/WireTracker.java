@@ -10,10 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author saharNooby
@@ -32,17 +29,26 @@ public final class WireTracker {
 		storage.getWires().values().forEach(this.cache::add);
 	}
 
-	public void onChunkSent(@NonNull Player player, @NonNull ChunkCoord coord) {
+	/**
+	 * @return Wires sent because of this chunk load.
+	 */
+	public Set<UUID> onChunkSent(@NonNull Player player, @NonNull ChunkCoord coord) {
 		PlayerTrackerData data = getData(player);
 
 		Set<ChunkCoord> loaded = this.chunkTracker.getLoaded(player);
+
+		Set<UUID> sent = new HashSet<>();
 
 		// Send any wire that is not yet loaded and ends in the sent chunk.
 		for (Wire wire : this.cache.getWiresInChunk(player.getWorld(), coord)) {
 			if (!data.getSentWires().containsKey(wire.getUuid()) && TrackerUtil.containsBothEnds(loaded, wire)) {
 				data.getSentWires().put(wire.getUuid(), sendWire(player, wire));
+
+				sent.add(wire.getUuid());
 			}
 		}
+
+		return sent;
 	}
 
 	public void onChunkUnloadSent(@NonNull Player player, @NonNull ChunkCoord coord) {
@@ -137,6 +143,19 @@ public final class WireTracker {
 
 			if (TrackerUtil.containsBothEnds(loaded, wire)) {
 				data.getSentWires().put(wire.getUuid(), sendWire(player, wire));
+			}
+		}
+	}
+
+	/**
+	 * Despawns and spawns again specified wires.
+	 */
+	public void respawnWires(@NonNull Player player, @NonNull Set<UUID> wires) {
+		PlayerTrackerData data = getData(player);
+
+		for (Map.Entry<UUID, SentWire> e : data.getSentWires().entrySet()) {
+			if (wires.contains(e.getKey())) {
+				ProtocolUtil.respawn(player, e.getValue());
 			}
 		}
 	}
