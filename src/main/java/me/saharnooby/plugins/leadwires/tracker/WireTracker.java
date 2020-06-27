@@ -162,7 +162,14 @@ public final class WireTracker {
 
 		for (Map.Entry<UUID, SentWire> e : data.getSentWires().entrySet()) {
 			if (wires == null || wires.contains(e.getKey())) {
-				ProtocolUtil.respawn(player, e.getValue());
+				SentWire prev = e.getValue();
+				SentWire curr = new SentWire(prev.getWire(), EntityId.next(), EntityId.next());
+
+				// Spawn new fire first to prevent flickering
+				ProtocolUtil.spawn(player, curr);
+				ProtocolUtil.despawn(player, prev);
+
+				e.setValue(curr);
 			}
 		}
 	}

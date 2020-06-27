@@ -122,11 +122,6 @@ public final class ProtocolUtil {
 		sendPacket(player, packet);
 	}
 
-	public static void respawn(@NonNull Player player, @NonNull SentWire wire) {
-		despawn(player, wire);
-		spawn(player, wire);
-	}
-
 	private static void sendPacket(@NonNull Player player, @NonNull PacketContainer packet) {
 		try {
 			ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
