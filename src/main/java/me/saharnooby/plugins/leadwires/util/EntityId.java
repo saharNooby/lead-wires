@@ -1,7 +1,10 @@
 package me.saharnooby.plugins.leadwires.util;
 
+import me.saharnooby.plugins.leadwires.LeadWires;
+
 import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 
 /**
  * @author saharNooby
@@ -10,6 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class EntityId {
 
 	private static final AtomicInteger nextId = new AtomicInteger(20_000_000);
+
+	private static boolean errorPrinted;
 
 	public static int next() {
 		try {
@@ -25,6 +30,12 @@ public final class EntityId {
 				return ((AtomicInteger) field.get(null)).incrementAndGet();
 			}
 		} catch (Exception e) {
+			if (!errorPrinted) {
+				LeadWires.getInstance().getLogger().log(Level.WARNING, "Failed to get new entity id with reflection, this may or may not cause bugs", e);
+
+				errorPrinted = true;
+			}
+
 			return nextId.incrementAndGet();
 		}
 	}
