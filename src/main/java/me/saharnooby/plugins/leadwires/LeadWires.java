@@ -13,12 +13,14 @@ import me.saharnooby.plugins.leadwires.message.MessageConfig;
 import me.saharnooby.plugins.leadwires.metrics.Metrics;
 import me.saharnooby.plugins.leadwires.module.Module;
 import me.saharnooby.plugins.leadwires.module.ModuleFactory;
+import me.saharnooby.plugins.leadwires.tracker.PlayerDebugInfo;
 import me.saharnooby.plugins.leadwires.tracker.WireTracker;
 import me.saharnooby.plugins.leadwires.tracker.WireTrackerListener;
 import me.saharnooby.plugins.leadwires.wire.WireStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -104,6 +106,7 @@ public final class LeadWires extends JavaPlugin {
 		getCommand("remove-nearest-wire").setExecutor(new RemoveNearestWireCommand());
 		getCommand("wire-tool").setExecutor(new WireToolCommand());
 		getCommand("lead-wires-reload").setExecutor(new ReloadCommand());
+		getCommand("respawn-wires").setExecutor(new RespawnWiresCommand());
 	}
 
 	private void createModules() {
@@ -162,6 +165,14 @@ public final class LeadWires extends JavaPlugin {
 		this.modules.forEach(Module::enable);
 
 		this.enableWireResend = getConfig().getBoolean("enableWireResend");
+	}
+
+	public void respawnWires(@NonNull Player target) {
+		this.tracker.respawnWires(target);
+	}
+
+	public PlayerDebugInfo getPlayerDebugInfo(@NonNull Player player) {
+		return tracker.getPlayerDebugInfo(player);
 	}
 
 	public static void sendMessage(@NonNull CommandSender sender, @NonNull String key, Object... args) {

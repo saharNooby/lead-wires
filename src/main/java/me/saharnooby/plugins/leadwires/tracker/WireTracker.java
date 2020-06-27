@@ -148,16 +148,29 @@ public final class WireTracker {
 	}
 
 	/**
-	 * Despawns and spawns again specified wires.
+	 * Despawns and spawns again all wires.
 	 */
-	public void respawnWires(@NonNull Player player, @NonNull Set<UUID> wires) {
+	public void respawnWires(@NonNull Player player) {
+		respawnWires(player, null);
+	}
+
+	/**
+	 * Despawns and spawns again specified wires or all wires if set is null.
+	 */
+	public void respawnWires(@NonNull Player player, Set<UUID> wires) {
 		PlayerTrackerData data = getData(player);
 
 		for (Map.Entry<UUID, SentWire> e : data.getSentWires().entrySet()) {
-			if (wires.contains(e.getKey())) {
+			if (wires == null || wires.contains(e.getKey())) {
 				ProtocolUtil.respawn(player, e.getValue());
 			}
 		}
+	}
+
+	public PlayerDebugInfo getPlayerDebugInfo(@NonNull Player player) {
+		PlayerTrackerData data = getData(player);
+
+		return new PlayerDebugInfo(new HashSet<>(data.getSentWires().keySet()), this.chunkTracker.getLoaded(player));
 	}
 
 	public void checkAllPlayers() {

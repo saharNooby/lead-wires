@@ -24,6 +24,9 @@ commands:
   lead-wires-reload:
     description: 'Reloads the plugin config'
     usage: '§e[LeadWires] /lead-wires-reload'
+  respawn-wires:
+    description: 'Respawns visible wires to specified player'
+    usage: '§e[LeadWires] /respawn-wires [player name]'
 permissions:
   leadwires.add-wire:
     description: 'Allows you to use /add-wire'
