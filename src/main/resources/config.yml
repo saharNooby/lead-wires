@@ -5,6 +5,15 @@
 # if you have too many wires in one place, especially thick wires.
 enableWireResend: false
 
+# If enableWireResend does not fix problems with wires not appearing,
+# you can enable continious respawn. All wires will be continiously
+# respawned while visible to a player. This may cause client lags
+# in older versions. Do not use on 1.8.
+continiousRespawn:
+  enabled: false
+  # Respawn interval in ticks (1 tick = 1 / 20 of a sec).
+  interval: 100
+
 # Modules of the plugin implement different features.
 modules:
   # Lead placement module allows players to place wires using lead item.

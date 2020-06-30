@@ -13,6 +13,7 @@ import me.saharnooby.plugins.leadwires.message.MessageConfig;
 import me.saharnooby.plugins.leadwires.metrics.Metrics;
 import me.saharnooby.plugins.leadwires.module.Module;
 import me.saharnooby.plugins.leadwires.module.ModuleFactory;
+import me.saharnooby.plugins.leadwires.task.WireRespawnTask;
 import me.saharnooby.plugins.leadwires.tracker.PlayerDebugInfo;
 import me.saharnooby.plugins.leadwires.tracker.WireTracker;
 import me.saharnooby.plugins.leadwires.tracker.WireTrackerListener;
@@ -36,6 +37,9 @@ import java.util.logging.Level;
  */
 public final class LeadWires extends JavaPlugin {
 
+	// todo implement wire view distance and rewrite wire tracker
+	// todo remove ugly solutions (wire respawn after send and continious respawn)
+
 	@Getter
 	private static LeadWires instance;
 
@@ -51,6 +55,10 @@ public final class LeadWires extends JavaPlugin {
 
 	@Getter
 	private boolean enableWireResend;
+	@Getter
+	private boolean continiousRespawnEnabled;
+	@Getter
+	private int continiousRespawnInterval;
 
 	@Override
 	public void onEnable() {
@@ -87,7 +95,9 @@ public final class LeadWires extends JavaPlugin {
 		createModules();
 		this.modules.forEach(Module::enable);
 
-		this.enableWireResend = getConfig().getBoolean("enableWireResend");
+		parseConfig();
+
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new WireRespawnTask(this), 0, 1);
 
 		new Metrics(this, 6873);
 	}
@@ -164,7 +174,13 @@ public final class LeadWires extends JavaPlugin {
 		createModules();
 		this.modules.forEach(Module::enable);
 
-		this.enableWireResend = getConfig().getBoolean("enableWireResend");
+		parseConfig();
+	}
+
+	private void parseConfig() {
+		this.enableWireResend = getConfig().getBoolean("enableWireResend", false);
+		this.continiousRespawnEnabled = getConfig().getBoolean("continiousRespawn.enabled", false);
+		this.continiousRespawnInterval = getConfig().getInt("continiousRespawn.interval", 100);
 	}
 
 	public void respawnWires(@NonNull Player target) {
