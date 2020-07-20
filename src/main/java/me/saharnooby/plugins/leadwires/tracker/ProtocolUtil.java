@@ -83,6 +83,8 @@ public final class ProtocolUtil {
 
 	private static int getSilverfishId() {
 		switch (NMSUtil.getMinorVersion()) {
+			case 16:
+				return 71;
 			case 15:
 				return 65;
 			case 14:
