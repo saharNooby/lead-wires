@@ -44,7 +44,7 @@ public final class NMSUtil {
 	}
 
 	/**
-	 * @return Reelase version, for example '2' from 'v1_16_R2'.
+	 * @return Release version, for example '2' from 'v1_16_R2'.
 	 */
 	public static int getReleaseVersion() {
 		return RELEASE;
