@@ -18,17 +18,19 @@ public final class TrackerUtil {
 	private static final Vector HOLDER_OFFSET;
 
 	static {
-		// Exact values obtained from net.minecraft.client.renderer.entity.MobRenderer#renderLeash
-		Vector attached = new Vector(0.0, -0.8083333333333332, -0.16000000238418544);
-		Vector holder = new Vector(0.6999999999999886, 0.7050000000000001, -0.5);
-
 		if (NMSUtil.getMinorVersion() >= 16) {
-			// These offsets are not exact and were chosen manually
-			ATTACHED_OFFSET = attached.add(new Vector(0, 0.5 + 3 / 16.0, 0.2 - 3 / 16.0));
-			HOLDER_OFFSET = holder.add(new Vector(0, -0.5 - 0.75 / 16.0, 0));
+			if (NMSUtil.getReleaseVersion() > 1) {
+				ATTACHED_OFFSET = new Vector(0, 0, -0.125);
+				HOLDER_OFFSET = new Vector(0, 0, 0);
+			} else {
+				// These offsets are not exact and were chosen manually
+				ATTACHED_OFFSET = new Vector(0, -0.12083333333333324, -0.14750000238418542);
+				HOLDER_OFFSET = new Vector(0.6999999999999886, 0.15812500000000007, -0.5);
+			}
 		} else {
-			ATTACHED_OFFSET = attached;
-			HOLDER_OFFSET = holder;
+			// Exact values obtained from net.minecraft.client.renderer.entity.MobRenderer#renderLeash
+			ATTACHED_OFFSET = new Vector(0.0, -0.8083333333333332, -0.16000000238418544);
+			HOLDER_OFFSET = new Vector(0.6999999999999886, 0.7050000000000001, -0.5);
 		}
 	}
 
