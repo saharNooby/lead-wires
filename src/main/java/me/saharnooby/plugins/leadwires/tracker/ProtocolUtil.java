@@ -23,6 +23,8 @@ import java.util.UUID;
  */
 public final class ProtocolUtil {
 
+	private static final int SILVERFISH_ID = getSilverfishId();
+
 	public static void spawn(@NonNull Player player, @NonNull SentWire sent) {
 		//System.out.println("Spawn " + sent.getWire().getUuid() + " to " + player.getName() + " [" + new Exception().getStackTrace()[2] + "]");
 
@@ -37,7 +39,7 @@ public final class ProtocolUtil {
 	private static void spawnEntity(@NonNull Player player, int id, @NonNull Vector loc) {
 		PacketContainer spawn = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY_LIVING);
 		spawn.getIntegers().write(0, id);
-		spawn.getIntegers().write(1, getSilverfishId());
+		spawn.getIntegers().write(1, SILVERFISH_ID);
 
 		if (NMSUtil.getMinorVersion() < 9) {
 			spawn.getIntegers().write(2, (int) (loc.getX() * 32.0D));
@@ -84,7 +86,13 @@ public final class ProtocolUtil {
 	private static int getSilverfishId() {
 		switch (NMSUtil.getMinorVersion()) {
 			case 16:
-				return 71;
+				switch (NMSUtil.getReleaseVersion()) {
+					case 3:
+					case 2:
+						return 72;
+					default:
+						return 71;
+				}
 			case 15:
 				return 65;
 			case 14:
