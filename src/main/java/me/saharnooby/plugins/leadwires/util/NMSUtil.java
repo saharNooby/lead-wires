@@ -51,11 +51,7 @@ public final class NMSUtil {
 	}
 
 	public static Class<?> getNMSClass(@NonNull String name) throws ClassNotFoundException {
-		return Class.forName("net.minecraft.server." + getVersion() + '.' + name);
-	}
-
-	public static Class<?> getCraftClass(@NonNull String name) throws ClassNotFoundException {
-		return Class.forName("org.bukkit.craftbukkit." + getVersion() + '.' + name);
+		return Class.forName("net.minecraft." + (NMSUtil.getMinorVersion() >= 17 ? "" : "server." + getVersion() + '.') + name);
 	}
 
 }

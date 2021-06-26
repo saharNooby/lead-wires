@@ -18,7 +18,10 @@ public final class TrackerUtil {
 	private static final Vector HOLDER_OFFSET;
 
 	static {
-		if (NMSUtil.getMinorVersion() >= 16) {
+		if (NMSUtil.getMinorVersion() >= 17) {
+			ATTACHED_OFFSET = new Vector(0, 0, -0.15625);
+			HOLDER_OFFSET = new Vector(0, 0, 0);
+		} else if (NMSUtil.getMinorVersion() >= 16) {
 			if (NMSUtil.getReleaseVersion() > 1) {
 				ATTACHED_OFFSET = new Vector(0, 0, -0.125);
 				HOLDER_OFFSET = new Vector(0, 0, 0);

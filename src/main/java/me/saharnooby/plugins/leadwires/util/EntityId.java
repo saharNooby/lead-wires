@@ -18,7 +18,9 @@ public final class EntityId {
 
 	public static int next() {
 		try {
-			Field field = NMSUtil.getNMSClass("Entity").getDeclaredField("entityCount");
+			boolean v17 = NMSUtil.getMinorVersion() >= 17;
+
+			Field field = NMSUtil.getNMSClass(v17 ? "world.entity.Entity" : "Entity").getDeclaredField(v17 ? "b" : "entityCount");
 
 			field.setAccessible(true);
 

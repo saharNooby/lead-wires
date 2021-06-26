@@ -58,7 +58,7 @@ public final class ProtocolUtil {
 
 		if (!metaIsSeparate) {
 			WrappedDataWatcher watcher = new WrappedDataWatcher();
-			WrappedDataWatcher.WrappedDataWatcherObject object = new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class));
+			WrappedDataWatcher.WrappedDataWatcherObject object = getByteObject();
 			watcher.setObject(object, (byte) 0x20, true);
 			spawn.getDataWatcherModifier().write(0, watcher);
 		}
@@ -74,17 +74,25 @@ public final class ProtocolUtil {
 			if (NMSUtil.getMinorVersion() < 15) {
 				list = Collections.singletonList(new WrappedWatchableObject(0, (byte) 0x20).getHandle());
 			} else {
-				WrappedDataWatcher.WrappedDataWatcherObject object = new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class));
+				WrappedDataWatcher.WrappedDataWatcherObject object = getByteObject();
 				list = Collections.singletonList(new WrappedWatchableObject(object, (byte) 0x20).getHandle());
 			}
+
 			meta.getModifier().write(1, new ArrayList<>(list));
 
 			sendPacket(player, meta);
 		}
 	}
 
+	private static WrappedDataWatcher.WrappedDataWatcherObject getByteObject() {
+		return new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class));
+	}
+
 	private static int getSilverfishId() {
+		// https://wiki.vg/Entities
 		switch (NMSUtil.getMinorVersion()) {
+			case 17:
+				return 77;
 			case 16:
 				switch (NMSUtil.getReleaseVersion()) {
 					case 3:
@@ -127,9 +135,21 @@ public final class ProtocolUtil {
 	public static void despawn(@NonNull Player player, @NonNull SentWire wire) {
 		//System.out.println("Despawn " + wire.getWire().getUuid() + " to " + player.getName());
 
-		PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
-		packet.getIntegerArrays().write(0, new int[] {wire.getIdA(), wire.getIdB()});
-		sendPacket(player, packet);
+		if (NMSUtil.getMinorVersion() >= 17) {
+			PacketContainer packet;
+
+			packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
+			packet.getIntegers().write(0, wire.getIdA());
+			sendPacket(player, packet);
+
+			packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
+			packet.getIntegers().write(0, wire.getIdB());
+			sendPacket(player, packet);
+		} else {
+			PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
+			packet.getIntegerArrays().write(0, new int[] {wire.getIdA(), wire.getIdB()});
+			sendPacket(player, packet);
+		}
 	}
 
 	private static void sendPacket(@NonNull Player player, @NonNull PacketContainer packet) {
