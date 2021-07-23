@@ -136,19 +136,48 @@ public final class ProtocolUtil {
 		//System.out.println("Despawn " + wire.getWire().getUuid() + " to " + player.getName());
 
 		if (NMSUtil.getMinorVersion() >= 17) {
-			PacketContainer packet;
-
-			packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
-			packet.getIntegers().write(0, wire.getIdA());
-			sendPacket(player, packet);
-
-			packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
-			packet.getIntegers().write(0, wire.getIdB());
-			sendPacket(player, packet);
-		} else {
 			PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
-			packet.getIntegerArrays().write(0, new int[] {wire.getIdA(), wire.getIdB()});
-			sendPacket(player, packet);
+
+			if (packet.getModifier().getField(0).getType().getName().equals("it.unimi.dsi.fastutil.ints.IntList")) {
+				despawn_1_17_1(player, wire);
+			} else {
+				despawn_1_17(player, wire);
+			}
+		} else {
+			despawn_1_16(player, wire);
+		}
+	}
+
+	private static void despawn_1_17_1(@NonNull Player player, @NonNull SentWire wire) {
+		PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
+		packet.getModifier().write(0, createEntityIdIntList(wire));
+		sendPacket(player, packet);
+	}
+
+	private static void despawn_1_17(@NonNull Player player, @NonNull SentWire wire) {
+		PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
+		packet.getIntegers().write(0, wire.getIdA());
+		sendPacket(player, packet);
+
+		packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
+		packet.getIntegers().write(0, wire.getIdB());
+		sendPacket(player, packet);
+	}
+
+	private static void despawn_1_16(@NonNull Player player, @NonNull SentWire wire) {
+		PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
+		packet.getIntegerArrays().write(0, new int[] {wire.getIdA(), wire.getIdB()});
+		sendPacket(player, packet);
+	}
+
+	private static Object createEntityIdIntList(@NonNull SentWire wire) {
+		try {
+			//noinspection PrimitiveArrayArgumentToVarargsMethod
+			return Class.forName("it.unimi.dsi.fastutil.ints.IntArrayList")
+					.getConstructor(int[].class)
+					.newInstance(new int[] {wire.getIdA(), wire.getIdB()});
+		} catch (ReflectiveOperationException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
