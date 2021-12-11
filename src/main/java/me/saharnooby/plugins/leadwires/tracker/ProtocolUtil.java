@@ -90,9 +90,20 @@ public final class ProtocolUtil {
 
 	private static int getSilverfishId() {
 		// https://wiki.vg/Entities
-		switch (NMSUtil.getMinorVersion()) {
+		// https://wiki.vg/Pre-release_protocol#Entity_Metadata
+		int latest = 77;
+
+		int minorVersion = NMSUtil.getMinorVersion();
+
+		if (minorVersion > 18) {
+			// May work on newer versions
+			return latest;
+		}
+
+		switch (minorVersion) {
+			case 18:
 			case 17:
-				return 77;
+				return latest;
 			case 16:
 				switch (NMSUtil.getReleaseVersion()) {
 					case 3:
