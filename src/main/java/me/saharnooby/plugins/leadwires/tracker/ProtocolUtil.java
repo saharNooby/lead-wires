@@ -26,8 +26,6 @@ public final class ProtocolUtil {
 	private static final int SILVERFISH_ID = getSilverfishId();
 
 	public static void spawn(@NonNull Player player, @NonNull SentWire sent) {
-		//System.out.println("Spawn " + sent.getWire().getUuid() + " to " + player.getName() + " [" + new Exception().getStackTrace()[2] + "]");
-
 		Wire wire = sent.getWire();
 
 		spawnEntity(player, sent.getIdA(), TrackerUtil.posA(wire));
@@ -37,7 +35,10 @@ public final class ProtocolUtil {
 	}
 
 	private static void spawnEntity(@NonNull Player player, int id, @NonNull Vector loc) {
-		PacketContainer spawn = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY_LIVING);
+		PacketType packetType = NMSUtil.getMinorVersion() >= 19 ?
+				PacketType.Play.Server.SPAWN_ENTITY :
+				PacketType.Play.Server.SPAWN_ENTITY_LIVING;
+		PacketContainer spawn = ProtocolLibrary.getProtocolManager().createPacket(packetType);
 		spawn.getIntegers().write(0, id);
 		spawn.getIntegers().write(1, SILVERFISH_ID);
 
@@ -91,19 +92,22 @@ public final class ProtocolUtil {
 	private static int getSilverfishId() {
 		// https://wiki.vg/Entities
 		// https://wiki.vg/Pre-release_protocol#Entity_Metadata
-		int latest = 77;
+		final int latestId = 80;
+		final int latestVersion = 19;
 
 		int minorVersion = NMSUtil.getMinorVersion();
 
-		if (minorVersion > 18) {
+		if (minorVersion > latestVersion) {
 			// May work on newer versions
-			return latest;
+			return latestId;
 		}
 
 		switch (minorVersion) {
+			case latestVersion:
+				return latestId;
 			case 18:
 			case 17:
-				return latest;
+				return 77;
 			case 16:
 				switch (NMSUtil.getReleaseVersion()) {
 					case 3:
@@ -144,8 +148,6 @@ public final class ProtocolUtil {
 	}
 
 	public static void despawn(@NonNull Player player, @NonNull SentWire wire) {
-		//System.out.println("Despawn " + wire.getWire().getUuid() + " to " + player.getName());
-
 		if (NMSUtil.getMinorVersion() >= 17) {
 			PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
 

@@ -29,7 +29,7 @@ Then, you need to add the plugin as a Maven dependency:
 <dependency>
     <groupId>me.saharnooby.plugins</groupId>
     <artifactId>lead-wires</artifactId>
-    <version>1.1.7</version>
+    <version>1.1.8</version>
 </dependency>
 ```
 
