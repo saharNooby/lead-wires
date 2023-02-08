@@ -12,7 +12,6 @@ import me.saharnooby.plugins.leadwires.wire.Vector;
 import me.saharnooby.plugins.leadwires.wire.Wire;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -57,7 +56,7 @@ public final class ProtocolUtil {
 		// Set entity flags to 0x20 (invisible)
 		// For some reason adding meta in the spawn packet not works in 1.8 (no serializer found for Byte/byte), so make an exception.
 		boolean metaIsSeparate = NMSUtil.getMinorVersion() >= 15 || NMSUtil.getMinorVersion() == 8;
-		boolean metaHigher1193 = NMSUtil.getMinorVersion() > 19 || (NMSUtil.getMinorVersion() == 19 && NMSUtil.getReleaseVersion() >= 2);
+		boolean metaHigher_1_19_3 = NMSUtil.getMinorVersion() > 19 || (NMSUtil.getMinorVersion() == 19 && NMSUtil.getReleaseVersion() >= 2);
 
 		if (!metaIsSeparate) {
 			WrappedDataWatcher watcher = new WrappedDataWatcher();
@@ -67,28 +66,30 @@ public final class ProtocolUtil {
 		}
 
 		sendPacket(player, spawn);
+
 		if (metaIsSeparate) {
 			PacketContainer meta = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
 			meta.getIntegers().write(0, id);
-			if (metaHigher1193) {
-				// 1.19.3 change entity metadata packet
+
+			if (metaHigher_1_19_3) {
+				// 1.19.3 changes entity metadata packet
 				// https://www.spigotmc.org/threads/unable-to-modify-entity-metadata-packet-using-protocollib-1-19-3.582442/
-				List<WrappedDataValue> list;
 				WrappedDataWatcher.WrappedDataWatcherObject object = getByteObject();
-				list = Collections.singletonList(new WrappedDataValue(
+				meta.getDataValueCollectionModifier().write(0, Collections.singletonList(new WrappedDataValue(
 						object.getIndex(),
 						object.getSerializer(),
 						(byte) 0x20
-				));
-				meta.getDataValueCollectionModifier().write(0, list);
+				)));
 			} else {
 				List<Object> list;
+
 				if (NMSUtil.getMinorVersion() < 15) {
 					list = Collections.singletonList(new WrappedWatchableObject(0, (byte) 0x20).getHandle());
 				} else {
 					WrappedDataWatcher.WrappedDataWatcherObject object = getByteObject();
 					list = Collections.singletonList(new WrappedWatchableObject(object, (byte) 0x20).getHandle());
 				}
+
 				meta.getModifier().write(1, new ArrayList<>(list));
 			}
 
