@@ -108,7 +108,6 @@ public final class ProtocolUtil {
 		final int latestVersion = 20;
 
 		int minorVersion = NMSUtil.getMinorVersion();
-		System.out.println(minorVersion);
 		if (minorVersion > latestVersion) {
 			// May work on newer versions
 			return latestId;
