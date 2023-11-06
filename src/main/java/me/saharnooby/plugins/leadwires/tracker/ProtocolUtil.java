@@ -104,11 +104,11 @@ public final class ProtocolUtil {
 	private static int getSilverfishId() {
 		// https://wiki.vg/Entities
 		// https://wiki.vg/Pre-release_protocol#Entity_Metadata
-		final int latestId = 80;
-		final int latestVersion = 19;
+		final int latestId = 85;
+		final int latestVersion = 20;
 
 		int minorVersion = NMSUtil.getMinorVersion();
-
+		System.out.println(minorVersion);
 		if (minorVersion > latestVersion) {
 			// May work on newer versions
 			return latestId;
@@ -117,6 +117,9 @@ public final class ProtocolUtil {
 		switch (minorVersion) {
 			case latestVersion:
 				return latestId;
+
+			case 19:
+				return 80;
 			case 18:
 			case 17:
 				return 77;
