@@ -117,7 +117,6 @@ public final class ProtocolUtil {
 		switch (minorVersion) {
 			case latestVersion:
 				return latestId;
-
 			case 19:
 				return 80;
 			case 18:
