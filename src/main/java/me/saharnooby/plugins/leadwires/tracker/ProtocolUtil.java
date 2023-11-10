@@ -108,6 +108,7 @@ public final class ProtocolUtil {
 		final int latestVersion = 20;
 
 		int minorVersion = NMSUtil.getMinorVersion();
+
 		if (minorVersion > latestVersion) {
 			// May work on newer versions
 			return latestId;
@@ -116,7 +117,6 @@ public final class ProtocolUtil {
 		switch (minorVersion) {
 			case latestVersion:
 				return latestId;
-
 			case 19:
 				return 80;
 			case 18:
