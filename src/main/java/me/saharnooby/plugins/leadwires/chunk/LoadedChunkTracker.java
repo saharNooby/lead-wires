@@ -66,9 +66,11 @@ public final class LoadedChunkTracker extends PacketAdapter implements Listener 
 			if (type == PacketType.Play.Server.MAP_CHUNK) {
 				ChunkCoord coord = new ChunkCoord(packet.getIntegers().read(0), packet.getIntegers().read(1));
 
-				if (NMSUtil.getMinorVersion() < 9 && isUnloadPacket(packet)) {
-					unloaded = coord;
-					set.remove(coord);
+				if (NMSUtil.getMinorVersion() < 9) {
+					if (isUnloadPacket(packet)) {
+						unloaded = coord;
+						set.remove(coord);
+					}
 				} else {
 					loaded = Collections.singletonList(coord);
 					set.add(coord);
@@ -86,7 +88,7 @@ public final class LoadedChunkTracker extends PacketAdapter implements Listener 
 				set.clear();
 			} else {
 		                ChunkCoord coord;
-		                if (NMSUtil.getMinorVersion() >= 20 && NMSUtil.getReleaseVersion() > 1) {
+				if ((NMSUtil.getMinorVersion() >= 20 && NMSUtil.getReleaseVersion() > 1) || NMSUtil.getMinorVersion() >= 21) {
 		                    coord = new ChunkCoord(packet.getStructures().read(0).getIntegers().read(0), packet.getStructures().read(0).getIntegers().read(1));
 		                } else {
 		                    coord = new ChunkCoord(packet.getIntegers().read(0), packet.getIntegers().read(1));

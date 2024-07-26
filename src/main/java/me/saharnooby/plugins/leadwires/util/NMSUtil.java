@@ -13,20 +13,26 @@ public final class NMSUtil {
 	private static final int RELEASE;
 
 	static {
+
 		String name = Bukkit.getServer().getClass().getName();
 
-		VERSION = name.substring(23, name.lastIndexOf('.'));
+		if (name.equals("org.bukkit.craftbukkit.CraftServer")) {
+			String bukkitVersion = Bukkit.getBukkitVersion(); // z.B. 1.21-R0.1-SNAPSHOT
+			String[] versionParts = bukkitVersion.split("-")[0].split("\\."); // z.B. [1, 21]
 
-		Pattern pattern = Pattern.compile("v1_(\\d{1,2})_R(\\d{1,2})");
-
-		Matcher matcher = pattern.matcher(VERSION);
-
-		if (!matcher.matches()) {
-			throw new IllegalStateException("Invalid server version \"" + VERSION + "\", server class is \"" + name + "\"");
+			VERSION = bukkitVersion.split("-")[0];
+			MINOR = Integer.parseInt(versionParts[1]);
+			RELEASE = versionParts.length > 2 ? Integer.parseInt(versionParts[2]) : 0;
+		} else {
+			VERSION = name.substring(23, name.lastIndexOf('.'));
+			Pattern pattern = Pattern.compile("v1_(\\d{1,2})_R(\\d{1,2})");
+			Matcher matcher = pattern.matcher(VERSION);
+			if (!matcher.matches()) {
+				throw new IllegalStateException("Invalid server version \"" + VERSION + "\", server class is \"" + name + "\"");
+			}
+			MINOR = Integer.parseInt(matcher.group(1));
+			RELEASE = Integer.parseInt(matcher.group(2));
 		}
-
-		MINOR = Integer.parseInt(matcher.group(1));
-		RELEASE = Integer.parseInt(matcher.group(2));
 	}
 
 	/**
