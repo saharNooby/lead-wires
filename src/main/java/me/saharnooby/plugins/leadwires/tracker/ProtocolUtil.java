@@ -10,6 +10,7 @@ import lombok.NonNull;
 import me.saharnooby.plugins.leadwires.util.NMSUtil;
 import me.saharnooby.plugins.leadwires.wire.Vector;
 import me.saharnooby.plugins.leadwires.wire.Wire;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -40,7 +41,12 @@ public final class ProtocolUtil {
 				PacketType.Play.Server.SPAWN_ENTITY_LIVING;
 		PacketContainer spawn = ProtocolLibrary.getProtocolManager().createPacket(packetType);
 		spawn.getIntegers().write(0, id);
-		spawn.getIntegers().write(1, SILVERFISH_ID);
+
+		if ((NMSUtil.getMinorVersion() >= 20 && NMSUtil.getReleaseVersion() > 4) || NMSUtil.getMinorVersion() >= 21) {
+			spawn.getEntityTypeModifier().write(0, EntityType.SILVERFISH);
+		} else {
+			spawn.getIntegers().write(1, SILVERFISH_ID);
+		}
 
 		if (NMSUtil.getMinorVersion() < 9) {
 			spawn.getIntegers().write(2, (int) (loc.getX() * 32.0D));
