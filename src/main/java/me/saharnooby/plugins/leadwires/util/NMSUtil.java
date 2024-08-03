@@ -17,8 +17,10 @@ public final class NMSUtil {
 		String name = Bukkit.getServer().getClass().getName();
 
 		if (name.equals("org.bukkit.craftbukkit.CraftServer")) {
-			String bukkitVersion = Bukkit.getBukkitVersion(); // z.B. 1.21-R0.1-SNAPSHOT
-			String[] versionParts = bukkitVersion.split("-")[0].split("\\."); // z.B. [1, 21]
+			// Example: "1.21-R0.1-SNAPSHOT"
+			String bukkitVersion = Bukkit.getBukkitVersion();
+			// Example: ["1", "21"]
+			String[] versionParts = bukkitVersion.split("-")[0].split("\\.");
 
 			VERSION = bukkitVersion.split("-")[0];
 			MINOR = Integer.parseInt(versionParts[1]);
