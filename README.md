@@ -4,6 +4,8 @@ A Spigot plugin that allows you to place "wires".
 
 ![Preview](https://saharnooby.me/download/preview.png?uuid=51da1969-48a3-42ef-82c1-6488a15af590)
 
+Download: [GitHub Releases](https://github.com/saharNooby/lead-wires/releases)
+
 [SpigotMC plugin page](https://www.spigotmc.org/resources/leadwires.76515/)
 
 ## Build
